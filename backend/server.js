@@ -13,7 +13,7 @@ const shopSearchRouter = require("./routes/shop/search-routes");
 const commonFeatureRouter = require("./routes/common/feature-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
 
-mongoose.connect('mongodb+srv://ayushnr35:ayushnr25@cluster0.sfmmj.mongodb.net/')
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('Connected to MongoDB'))
  .catch(err => console.error(err));
 
