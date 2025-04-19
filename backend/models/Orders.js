@@ -1,17 +1,33 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-  userId: String,
-  cartId: String,
-  cartItems: [
-    {
-      productId: String,
-      title: String,
-      image: String,
-      price: String,
-      quantity: Number,
+  userId: {
+    type: String,
+    required: true
+  },
+  cartItems: [{
+    productId: {
+      type: String,
+      required: true
     },
-  ],
+    title: {
+      type: String,
+      required: true
+    },
+    image: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: String,
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1
+    }
+  }],
   addressInfo: {
     addressId: String,
     address: String,
@@ -19,19 +35,35 @@ const OrderSchema = new mongoose.Schema({
     state: String,
     country: String,
     pincode: String,
-    phone: String,
+    phone: String
   },
-  orderStatus: String,
-  paymentMethod: String,
-  paymentStatus: String,
-  totalAmount: Number,
-  orderDate: Date,
-  orderUpdateDate: Date,
-  paymentId: String,
-  
-},
-{
-  timestamps: true,
+  orderStatus: {
+    type: String,
+    default: 'pending'
+  },
+  paymentMethod: {
+    type: String,
+    default: 'card'
+  },
+  paymentStatus: {
+    type: String,
+    default: 'pending'
+  },
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now
+  },
+  orderUpdateDate: {
+    type: Date,
+    default: Date.now
+  },
+  paymentId: String
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

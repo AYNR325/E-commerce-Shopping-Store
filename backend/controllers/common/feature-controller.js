@@ -3,7 +3,7 @@ const Feature = require("../../models/Feature");
 const addFeatureImage = async (req, res) => {
   try {
     const { image } = req.body;
-    console.log(image, "image");
+    // console.log(image, "image");
 
     const featureImages = new Feature({
       image,
@@ -43,7 +43,7 @@ const getFeatureImages = async (req, res) => {
 const deleteFeatureImages = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id, "id");
+    // console.log(id, "id");
     const deletedImg = await Feature.findByIdAndDelete(id);
     if (!deletedImg){
       return res.status(404).json({

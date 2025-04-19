@@ -19,7 +19,7 @@ const handleImageUpload = async (req, res) => {
     });
   }
 };
-console.log("Product model:", Product);
+// console.log("Product model:", Product);
 
 //add a new product
 const addProduct = async (req, res) => {
@@ -35,7 +35,7 @@ const addProduct = async (req, res) => {
       totalStock,
       averageReview,
     } = req.body;
-    console.log("Request body:", req.body);
+    // console.log("Request body:", req.body);
 
     const newlyCreatedProduct = new Product({
       image,
@@ -81,7 +81,7 @@ const fetchAllProducts = async (req, res) => {
 //edit a product
 const editProduct = async (req, res) => {
   try {
-    console.log("Request Params:", req.params);
+    // console.log("Request Params:", req.params);
 
     const { id } = req.params;
     const {
@@ -95,8 +95,8 @@ const editProduct = async (req, res) => {
       totalStock,
       averageReview,
     } = req.body;
-console.log( "id is ",id);
-console.log("request body",req.body)
+// console.log( "id is ",id);
+// console.log("request body",req.body)
     let findProduct = await Product.findById(id);
     if (!findProduct)
       return res.status(404).json({
@@ -115,7 +115,7 @@ console.log("request body",req.body)
     findProduct.image = image || findProduct.image;
 
     await findProduct.save();
-    console.log(findProduct)
+    // console.log(findProduct)
     res.status(200).json({
       success: true,
       data: findProduct,
@@ -133,7 +133,7 @@ const deleteProduct = async(req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findByIdAndDelete(id);
-    console.log("Request Params for delete:", req.params);
+    // console.log("Request Params for delete:", req.params);
     if (!product)
       return res.status(404).json({
         success: false,

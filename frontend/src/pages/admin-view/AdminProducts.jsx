@@ -145,6 +145,7 @@ function AdminProducts() {
           toast({
             title: "Success",
             description: "Product updated successfully!",
+            className:"text-white bg-green-500",
           });
           dispatch(fetchAllProducts());
 
@@ -185,6 +186,7 @@ function AdminProducts() {
           toast({
             title: "Success",
             description: "Product added successfully!",
+            className:"text-white bg-green-500",
           });
 
           reset({
@@ -269,6 +271,7 @@ function AdminProducts() {
       toast({
         variant: "destructive",
         description: "Failed to delete the product. Product ID is missing.",
+        className:"text-white bg-red-500",
       });
       return;
     }
@@ -278,12 +281,14 @@ function AdminProducts() {
         toast({
           variant: "destructive",
           description: "Product deleted successfully!",
+          className:"text-white bg-green-500",
         });
         dispatch(fetchAllProducts());
       } else {
         toast({
           variant: "destructive",
           description: "Failed to delete the product. Please try again.",
+          className:"text-white bg-red-500",
         });
       }
       setOpenDeleteDialog(false); // Close dialog after operation
@@ -303,7 +308,7 @@ function AdminProducts() {
             setOpenCreateProductsDialog(true);
             setIsEditing(false);
           }}
-          className="bg-black text-white hover:bg-white hover:text-black border-black border-[1px] rounded-[6px]"
+          className="bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border-[1px] border-[#A67A4B]  rounded-[6px]"
         >
           Add New Product
         </Button>
@@ -432,7 +437,7 @@ function AdminProducts() {
 
               <Button
                 type="submit"
-                className="w-full bg-black text-white hover:bg-white hover:text-black border-black border-[1px] rounded-[6px]"
+                className="w-full bg-[#A67A4B] text-white hover:text-white hover:bg-[#ad8050] border-[1px] border-[#A67A4B] rounded-[6px]"
               >
                 
                 { isEditing ? <span>Edit</span> : <span>Submit</span>}
@@ -444,7 +449,7 @@ function AdminProducts() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-        <AlertDialogContent className="bg-black text-white">
+        <AlertDialogContent className="bg-[#A67A4B] text-white">
           <AlertDialogHeader>
             <AlertDialogTitle>
               Are you sure you want to delete this product?

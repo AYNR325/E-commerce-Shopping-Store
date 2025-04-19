@@ -32,8 +32,8 @@ const adminSidebarMenuItems = [
 function MenuItems({ setOpen }) {
   const navigate = useNavigate();
 
-  return (
-    <nav className="mt-8 flex-col flex gap-2">
+  return ( 
+    <nav className=" mt-8  flex-col flex gap-2 bg-[#A67A4B] ">
       {adminSidebarMenuItems.map((menuItem) => (
         <div
           key={menuItem.id}
@@ -85,11 +85,11 @@ function AdminSideBar({ open, setOpen }) {
 </SheetContent> */}
 <SheetContent
   side="left"
-  className="w-64 p-0 bg-white shadow-lg border-none backdrop-blur-0"
+  className="w-64  p-0  bg-[#A67A4B] shadow-lg border-none backdrop-blur-0"
 >
-  <div className="flex h-full flex-col">
+  <div className="flex  h-full flex-col ">
     <SheetHeader className="border-b">
-      <SheetTitle className="mt-5 mb-5 flex gap-2">
+      <SheetTitle className="mt-5  mb-5 flex gap-2">
         <ChartNoAxesCombined size={30} />
         <h1 className="text-2xl font-extrabold">Admin Panel</h1>
       </SheetTitle>
@@ -100,7 +100,7 @@ function AdminSideBar({ open, setOpen }) {
 
 
       </Sheet>
-      <aside className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
+      <aside className="hidden w-64 flex-col border-r  p-6 lg:flex bg-[#A67A4B] ">
         <div
           onClick={() => navigate("/admin/dashboard")}
           className="flex cursor-pointer items-center gap-2"

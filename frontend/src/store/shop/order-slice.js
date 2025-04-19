@@ -1,317 +1,298 @@
-/*// import  { createSlice, createAsyncThunk}  from "@reduxjs/toolkit";
-
-// import axios from 'axios';
-
-// export const paymentGateway=createAsyncThunk(
-//     'payment/gateway',
-//     async({cartItems})=>{
-//         const response = await axios.post(
-//             "http://localhost:3000/api/shop/order/checkout",
-//             {
-//                 cartItems
-//             }
-//           );
-
-//           return response.data;
-//     }
-// )
-
-// const orderSlice=createSlice({
-//     name: 'order',
-//     initialState: {
-//         isLoading: false,
-//         error: null,
-//         success: false,
-//         orderId: null,
-//         orderStatus: null,
-//         cartItems:[],
-//         totalPrice: 0,
-//         orderDetails: null
-//     },
-//     reducers: {},
-//     extraReducers: (builder) => {
-//         builder
-//          .addCase(paymentGateway.pending, (state) => {
-//                 state.isLoading = true;
-//                 state.error = null;
-//                 state.success = false;
-//             })
-//             .addCase(paymentGateway.fulfilled, (state, action) => {
-//                 state.isLoading = false;
-//                 state.success = true;
-//                 state.orderId = action.payload.orderId;
-//                 state.orderStatus = action.payload.orderStatus;
-//                 state.cartItems = action.payload.cartItems;
-//                 state.totalPrice = action.payload.totalPrice;
-//                 state.orderDetails = action.payload.orderDetails;
-//                 state.error = null;
-//                 console.log(state)
-
-//                 // clear cart after successful checkout
-//                 // dispatch(clearCart());
-//                 // dispatch(fetchCartItems());
-//             })
-//             .addCase(paymentGateway.rejected, (state, action) => {
-//                 state.isLoading = false;
-//                 state.error = action.error.message;
-//                 state.success = false;
-//             })
-//             //.addCase(clearCart.fulfilled, (state) => {
-//                 // state.cartItems = [];
-//                 // state.totalPrice = 0;
-//                 // state.orderDetails = null;
-//             //
-//             // })
-//     }
-
-// })
-
-// export default orderSlice.reducer;
-
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from 'axios';
-
-// const API_BASE_URL = 'http://localhost:3000/api';
-
-// export const paymentGateway = createAsyncThunk(
-//     'payment/gateway',
-//     async ({ cartItems }, { rejectWithValue }) => {
-//         try {
-//             if (!Array.isArray(cartItems) || cartItems.length === 0) {
-//                 throw new Error('Invalid cart items');
-//             }
-
-//             const response = await axios.post(
-//                 `${API_BASE_URL}/shop/order/checkout`,
-//                 { cartItems },
-//                 {
-//                     headers: {
-//                         'Content-Type': 'application/json'
-//                     }
-//                 }
-//             );
-
-//             return response.data;
-//         } catch (error) {
-//             if (axios.isAxiosError(error)) {
-//                 return rejectWithValue(error.response?.data || 'Network error occurred');
-//             }
-//             return rejectWithValue(error.message);
-//         }
-//     }
-// );
-
-// const initialState = {
-//     isLoading: false,
-//     error: null,
-//     orderId: null,
-//     orderStatus: null,
-//     orderData: null  // Combined order details in one property
-// };
-
-// const orderSlice = createSlice({
-//     name: 'order',
-//     initialState,
-//     reducers: {
-//         resetOrderState: (state) => {
-//             return initialState;
-//         }
-//     },
-//     extraReducers: (builder) => {
-//         builder
-//             .addCase(paymentGateway.pending, (state) => {
-//                 state.isLoading = true;
-//                 state.error = null;
-//             })
-//             .addCase(paymentGateway.fulfilled, (state, action) => {
-//                 state.isLoading = false;
-//                 state.orderId = action.payload.orderId;
-//                 state.orderStatus = action.payload.orderStatus;
-//                 state.orderData = {
-//                     cartItems: action.payload.cartItems,
-//                     totalPrice: action.payload.totalPrice,
-//                     details: action.payload.orderDetails
-//                 };
-//                 state.error = null;
-//             })
-//             .addCase(paymentGateway.rejected, (state, action) => {
-//                 state.isLoading = false;
-//                 state.error = action.payload || 'An error occurred';
-//             });
-//     }
-// });
-
-// export const { resetOrderState } = orderSlice.actions;
-// export default orderSlice.reducer; 
-*/
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { clearCart } from "./cart-slice"; // Import the clearCart action
 
-const API_BASE_URL = "http://localhost:3000/api";
+// Use environment variable for API URL
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-export const createOrder = createAsyncThunk(
-  "order/createOrder",
-  async (formData) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/shop/order/create`, {
-        formData,
-      });
-      return response.data;
-      
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
+// Get all orders (with optional userId filter for customer vs admin view)
 export const getAllOrders = createAsyncThunk(
   "order/getAllOrders",
-  async (userId) => {
+  async ({userId}, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/shop/order/get/${userId}`
-      );
-      return response.data;
-      
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
-export const getOrderDetails = createAsyncThunk(
-  "order/orderDetails",
-  async (orderId) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/shop/order/details/${orderId}`
-      );
-      return response.data;
-      
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
-export const paymentGateway = createAsyncThunk(
-  "payment/gateway",
-  async ({ cartItems }, { rejectWithValue }) => {
-    try {
-      // Validate cartItems structure
-      if (!Array.isArray(cartItems?.items) || cartItems.items.length === 0) {
-        throw new Error("Invalid cart items");
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/shop/order/checkout`,
-        { cartItems },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+      // If userId is provided, get orders for that user, otherwise get all orders (admin view)
+      const url = userId 
+        ? `${API_URL}/api/shop/order/get/${userId}`
+        : `${API_URL}/api/shop/order/all`;
+        
+      console.log("Fetching orders from:", url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
-      );
-
+      });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Handle Axios error specifically
-        return rejectWithValue(
-          error.response?.data || "Network error occurred"
-        );
+        return rejectWithValue(error.response?.data || "Network error occurred");
       }
-      // For other types of errors
       return rejectWithValue(error.message);
     }
   }
 );
 
+// Get order details
+export const getOrderDetails = createAsyncThunk(
+  "order/getOrderDetails",
+  async ({orderId}, { rejectWithValue }) => {
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        return rejectWithValue("Authentication token not found. Please log in again.");
+      }
+      
+      console.log(`Fetching order details for ID: ${orderId} with token`);
+      
+      const response = await axios.get(`${API_URL}/api/shop/order/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true // Include cookies in the request
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching order details:", error.response?.data || error.message);
+      
+      if (error.response?.status === 401) {
+        return rejectWithValue("Authentication failed. Please log in again.");
+      }
+      
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data || "Network error occurred");
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Payment gateway
+export const paymentGateway = createAsyncThunk(
+  "order/paymentGateway",
+  async (paymentData, { rejectWithValue }) => {
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        return rejectWithValue("Authentication token not found. Please log in again.");
+      }
+      
+      console.log("Using token for payment:", token ? "Token exists" : "No token");
+      
+      const response = await axios.post(`${API_URL}/api/shop/order/checkout`, paymentData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true // Include cookies in the request
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error("Payment gateway error:", error.response?.data || error.message);
+      
+      if (error.response?.status === 401) {
+        return rejectWithValue("Authentication failed. Please log in again.");
+      }
+      
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data || "Network error occurred");
+      }
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Update order status (admin function)
+export const updateOrderStatus = createAsyncThunk(
+  'order/updateOrderStatus',
+  async ({ orderId, orderStatus }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/shop/order/${orderId}/status`,
+        { orderStatus },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update order status'
+      );
+    }
+  }
+);
+
+// Update payment status (admin function)
+export const updatePaymentStatus = createAsyncThunk(
+  'order/updatePaymentStatus',
+  async ({ orderId, paymentStatus }, { rejectWithValue }) => {
+    try {
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        return rejectWithValue("Authentication token not found. Please log in again.");
+      }
+      
+      console.log(`Updating payment status for order ${orderId} to ${paymentStatus}`);
+      
+      const response = await axios.put(
+        `${API_URL}/api/shop/order/${orderId}/payment-status`,
+        { paymentStatus },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error updating payment status:", error.response?.data || error.message);
+      
+      if (error.response?.status === 401) {
+        return rejectWithValue("Authentication failed. Please log in again.");
+      }
+      
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update payment status'
+      );
+    }
+  }
+);
+
 const initialState = {
-  isLoading: false,
-  error: null,
-  orderData: null,
-  orderId: null,
   orderList: [],
   orderDetails: null,
-
+  isLoading: false,
+  error: null,
+  paymentUrl: null
 };
 
 const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    resetOrderState: (state) => {
-      return initialState;
+    clearOrderDetails: (state) => {
+      state.orderDetails = null;
     },
+    clearPaymentUrl: (state) => {
+      state.paymentUrl = null;
+    }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(paymentGateway.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(paymentGateway.fulfilled, (state, action) => {
-        console.log("Payment URL:", action.payload.data.url);
-        state.isLoading = false;
-        // state.orderId = action.payload.orderId;
-        // state.orderStatus = action.payload.orderStatus;
-        state.orderData = {
-          orderData: action.payload?.data || null,
-        };
-        state.error = null;
-      })
-      .addCase(paymentGateway.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload || "An error occurred";
-      })
-      .addCase(createOrder.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(createOrder.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        state.orderId = action.payload.orderId;
-        sessionStorage.setItem(
-          "currentOrderId",
-          JSON.stringify(action.payload.orderId)
-        );
-      })
-      .addCase(createOrder.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload || "An error occurred";
-        state.orderId=null;
-      })
+      // Get All Orders
       .addCase(getAllOrders.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(getAllOrders.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = null;
-        state.orderList = action.payload.data;
+        state.orderList = action.payload.orders || [];
       })
       .addCase(getAllOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "An error occurred";
-        state.orderList = [];
       })
+      
+      // Get Order Details
       .addCase(getOrderDetails.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(getOrderDetails.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.error = null;
-        state.orderDetails = action.payload.data;
+        state.orderDetails = action.payload.order;
+        
+        // Ensure addressInfo is always an object with default values
+        if (state.orderDetails && (!state.orderDetails.addressInfo || Object.keys(state.orderDetails.addressInfo).length === 0)) {
+          state.orderDetails.addressInfo = {
+            addressId: '',
+            address: 'Default Address',
+            city: 'Default City',
+            state: 'Default State',
+            country: 'Default Country',
+            pincode: '000000',
+            phone: '0000000000'
+          };
+        }
       })
       .addCase(getOrderDetails.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "An error occurred";
-        state.orderDetails = null;
+      })
+      
+      // Payment Gateway
+      .addCase(paymentGateway.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(paymentGateway.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.paymentUrl = action.payload.url;
+      })
+      .addCase(paymentGateway.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "An error occurred";
+      })
+      
+      // Update Order Status
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the order in the orderList
+        if (state.orderList) {
+          state.orderList = state.orderList.map(order => 
+            order._id === action.payload.order._id ? action.payload.order : order
+          );
+        }
+        // Update the orderDetails if it matches the updated order
+        if (state.orderDetails && state.orderDetails._id === action.payload.order._id) {
+          state.orderDetails = action.payload.order;
+        }
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Update Payment Status
+      .addCase(updatePaymentStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updatePaymentStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the order in the orderList
+        if (state.orderList) {
+          state.orderList = state.orderList.map(order => 
+            order._id === action.payload.order._id ? action.payload.order : order
+          );
+        }
+        // Update the orderDetails if it matches the updated order
+        if (state.orderDetails && state.orderDetails._id === action.payload.order._id) {
+          state.orderDetails = action.payload.order;
+        }
+      })
+      .addCase(updatePaymentStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { resetOrderState } = orderSlice.actions;
+export const { clearOrderDetails, clearPaymentUrl } = orderSlice.actions;
 export default orderSlice.reducer;

@@ -1,5 +1,6 @@
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const mongoose = require("mongoose");
 
 const addToCart = async (req, res) => {
   try {
@@ -227,9 +228,51 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
+const clearCart = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+    
+    console.log(`Attempting to clear cart for user: ${userId}`);
+    
+    // Validate userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+    
+    // Delete all cart items for the user
+    const result = await Cart.deleteMany({ userId });
+    
+    console.log(`Cart cleared for user: ${userId}. Deleted ${result.deletedCount} items.`);
+    
+    return res.status(200).json({
+      success: true,
+      message: "Cart cleared successfully",
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to clear cart",
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   addToCart,
+  fetchCartItems,
   updateCartItemQty,
   deleteCartItem,
-  fetchCartItems,
+  clearCart,
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 function AddressCard({
   addressInfo,
@@ -10,25 +11,26 @@ function AddressCard({
   setCurrentSelectedAddress,
   selectedId,
 }) {
-  console.log(addressInfo,"ayush");
-  console.log(selectedId, addressInfo._id,"ayush");
-  // const handleAddressSelection=()=>{
-  //   setCurrentSelectedAddress
-  //         ? () => setCurrentSelectedAddress(addressInfo)
-  //         : null
-  // }
+  console.log("Address info:", addressInfo);
+  console.log("Selected ID:", selectedId?._id, "Current address ID:", addressInfo?._id);
+   const {toast }= useToast();
+  const handleAddressSelection = () => {
+    if (setCurrentSelectedAddress) {
+      console.log("Setting selected address to:", addressInfo);
+      setCurrentSelectedAddress(addressInfo);
+      toast({
+        title:"Address Selected Successfully",
+        type: "success",
+        duration: 5000,
+        className:"bg-green-500"
+      })
+    }
+  };
+  
   return (
     <Card
-      // onClick={
-      //   setCurrentSelectedAddress
-      //     ? () => setCurrentSelectedAddress(addressInfo)
-      //     : null
-      // }
-      className={`cursor-pointer rounded-[7px]  border-red-700 ${
-        selectedId?._id === addressInfo?._id
-          ? "border-red-700 border-[4px]"
-          : "border-gray-400"
-      }`}
+      onClick={handleAddressSelection}
+      className={`cursor-pointer border-none bg-white`}
     >
       <CardContent className="grid p-4 gap-4">
         <Label>Address: {addressInfo?.address}</Label>
@@ -42,14 +44,20 @@ function AddressCard({
         {location.pathname === "/shop/account" ? (
           <>
             <Button
-              onClick={() => handleEditAddress(addressInfo)}
-              className="bg-black text-white hover:text-black border-[1px] border-black rounded-[7px]"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click event
+                handleEditAddress(addressInfo);
+              }}
+              className="bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border-[1px] border-[#A67A4B] "
             >
               Edit
             </Button>
             <Button
-              onClick={() => handleDeleteAddress(addressInfo)}
-              className="bg-black text-white hover:text-black border-[1px] border-black rounded-[7px]"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click event
+                handleDeleteAddress(addressInfo);
+              }}
+              className="bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border-[1px] border-[#A67A4B] "
             >
               Delete
             </Button>
@@ -57,12 +65,11 @@ function AddressCard({
         ) : (
           <>
             <Button
-              onClick={
-                setCurrentSelectedAddress
-                  ? () => setCurrentSelectedAddress(addressInfo)
-                  : null
-              }
-              className="bg-black text-white hover:text-black border-[1px] border-black rounded-[7px] mt-5"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent double selection
+                handleAddressSelection();
+              }}
+              className="bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border-[1px] border-[#A67A4B]  mt-5"
             >
               Select Address
             </Button>

@@ -11,7 +11,7 @@ export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/api/auth/register",
+      `${import.meta.env.VITE_API_URL}/api/auth/register`,
       formData,
       {
         withCredentials: true,
@@ -25,7 +25,7 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/api/auth/login",
+      `${import.meta.env.VITE_API_URL}/api/auth/login`,
       formData,
       {
         withCredentials: true,
@@ -39,7 +39,7 @@ export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
   async () => {
     const response = await axios.get(
-      "http://localhost:3000/api/auth/check-auth",
+      `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
       {
         withCredentials: true,
         headers: {
@@ -56,7 +56,7 @@ export const logoutUser = createAsyncThunk(
   "/auth/logout",
   async () => {
     const response = await axios.post(
-      "http://localhost:3000/api/auth/logout",
+      `${import.meta.env.VITE_API_URL}/api/auth/logout`,
       {},
       {
         withCredentials: true,
@@ -93,8 +93,14 @@ const authSlice = createSlice({
       state.isLoading = true;
   }).addCase(loginUser.fulfilled,(state,action)=>{
       state.isLoading = false;
-      state.isAuthenticated =action.payload.success ? true : false;
-      state.user =action.payload.success ? action.payload.user : null;
+      state.isAuthenticated = action.payload.success ? true : false;
+      state.user = action.payload.success ? action.payload.user : null;
+      
+      // Store token in localStorage if login is successful
+      if (action.payload.success && action.payload.token) {
+        localStorage.setItem('token', action.payload.token);
+        console.log('Token stored in localStorage');
+      }
   } ).addCase(loginUser.rejected,(state,action)=>{
       state.isLoading = false;
       state.isAuthenticated = false;
@@ -111,10 +117,16 @@ const authSlice = createSlice({
     state.isLoading = false;
     state.user = null;
     state.isAuthenticated = false;
-  }).addCase(logoutUser.fulfilled, (state, action) => {
+  }).addCase(logoutUser.pending, (state)=>{
+    state.isLoading = true;
+  }).addCase(logoutUser.fulfilled,(state,action)=>{
     state.isLoading = false;
-    state.user =null;
-    state.isAuthenticated =false;
+    state.isAuthenticated = false;
+    state.user = null;
+    
+    // Remove token from localStorage on logout
+    localStorage.removeItem('token');
+    console.log('Token removed from localStorage');
   })
   }
 });

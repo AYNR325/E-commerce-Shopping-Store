@@ -90,6 +90,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
       toast({
         title: "You can add max 3 addresses",
         variant: "destructive",
+        className: "text-white bg-red-500",
       });
 
       return;
@@ -117,6 +118,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
             });
             toast({
               title: "Address updated successfully",
+              className: "text-white bg-green-500",
             });
           }
         })
@@ -146,6 +148,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
             });
             toast({
               title: "Address added successfully",
+              className: "text-white bg-green-500",
             });
           }
         });
@@ -174,6 +177,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
         dispatch(fetchAllAddresses(user?.id));
         toast({
           title: "Address deleted successfully",
+          className: "text-white bg-green-500",
         });
       }
     });
@@ -186,7 +190,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
 
   console.log(addressList, "addressList");
   return (
-    <Card>
+    <Card className="bg-[#F0F0F0]">
       <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2     gap-2">
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
@@ -209,7 +213,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4   ">
           {addressFormControls.map((field) => (
-            <div key={field.name} className="flex flex-col">
+            <div key={field.name} className="flex flex-col ">
               <Label className="mb-1 font-semibold text-[15px] ">
                 {field.label}
               </Label>
@@ -230,7 +234,7 @@ function Address({setCurrentSelectedAddress,selectedId}) {
           ))}
           <Button
             type="submit"
-            className=" w-full bg-black text-white rounded hover:bg-white hover:text-black border-[1px] border-black "
+            className=" w-full bg-[#A67A4B] text-white  hover:bg-[#af865a]  "
           >
             {currentEditedId !== null ? "Update Address" : "Add Address"}
           </Button>

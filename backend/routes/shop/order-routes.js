@@ -1,14 +1,26 @@
 const express = require('express');
+const router = express.Router();
+const orderController = require('../../controllers/orders/orderController');
+const paymentController = require('../../controllers/orders/paymentController');
+const webhookController = require('../../controllers/orders/webhookController');
+const { authMiddleware } = require('../../controllers/auth/auth-controller');
+const adminMiddleware = require('../../middleware/adminMiddleware');
 
-const {paymentController}=require("../../controllers/orders/paymentController")
-const { createOrder, getAllOrders, orderDetails }= require("../../controllers/shop/order-controller")
-const router=express.Router();
+// Customer routes - specific routes first
+router.get('/all', authMiddleware, adminMiddleware, orderController.getAllOrders);
+router.get('/get/:userId', authMiddleware, orderController.getUserOrders);
+router.get('/session/:sessionId', authMiddleware, orderController.getOrderBySession);
+router.post('/checkout', authMiddleware, paymentController);
 
-router.post("/checkout",paymentController)
+// Webhook route doesn't need auth middleware
+router.post('/webhook', express.raw({ type: 'application/json' }), webhookController);
 
-router.post("/create", createOrder)
+// Admin routes
+router.get('/all', authMiddleware, adminMiddleware, orderController.getAllOrders);
+router.put('/:orderId/status', authMiddleware, adminMiddleware, orderController.updateOrderStatus);
+router.put('/:orderId/payment-status', authMiddleware, adminMiddleware, orderController.updatePaymentStatus);
 
-router.get("/get/:userId", getAllOrders)
+// Generic route last
+router.get('/:orderId', authMiddleware, orderController.getOrderDetails);
 
-router.get("/details/:orderId", orderDetails)
 module.exports = router;

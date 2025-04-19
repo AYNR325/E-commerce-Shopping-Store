@@ -297,22 +297,39 @@ function MenuItems({closeSheet}) {
   };
 
   return (
-    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-8 lg:flex-row">
-      {menuItemHeader.map((menuItem) => (
-        <Label
-          key={menuItem.id}
-          onClick={() => {handleNavigate(menuItem)
-            closeSheet()
-          }}
-          className={`text-sm font-medium cursor-pointer transition-colors
-            ${isActive(menuItem) 
-              ? "text-primary font-bold" 
-              : "text-muted-foreground hover:text-primary"}`}
-        >
-          {menuItem.label}
-        </Label>
-      ))}
-    </nav>
+    // <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-8 lg:flex-row">
+    //   {menuItemHeader.map((menuItem) => (
+    //     <Label
+    //       key={menuItem.id}
+    //       onClick={() => {handleNavigate(menuItem)
+    //         closeSheet()
+    //       }}
+    //       className={`text-sm font-medium cursor-pointer transition-colors
+    //         ${isActive(menuItem) 
+    //           ? "text-[#A67A4B] font-bold" 
+    //           : "text-muted-foreground hover:text-[#A67A4B]"}`}
+    //     >
+    //       {menuItem.label}
+    //     </Label>
+    //   ))}
+    // </nav>
+
+    <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
+    {menuItemHeader.map((menuItem) => (
+      <span
+        key={menuItem.id}
+        onClick={() => {
+          handleNavigate(menuItem);
+          closeSheet && closeSheet();
+        }}
+        className={`text-sm font-medium cursor-pointer transition-colors ${
+          isActive(menuItem) ? "text-[#A67A4B] font-bold" : "text-muted-foreground hover:text-[#A67A4B]"
+        }`}
+      >
+        {menuItem.label}
+      </span>
+    ))}
+  </nav>
   );
 }
 

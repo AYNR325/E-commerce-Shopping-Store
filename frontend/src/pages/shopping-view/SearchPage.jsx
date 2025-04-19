@@ -47,7 +47,7 @@ function SearchPage() {
           description: "Product added to cart successfully!",
           appearance: "success",
           duration: 2000,
-          className: "bg-white",
+          className:"text-white bg-green-500",
         });
       }
     });

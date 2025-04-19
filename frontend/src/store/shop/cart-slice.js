@@ -10,7 +10,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ userId, productId, quantity }) => {
     const response = await axios.post(
-      "http://localhost:3000/api/shop/cart/add",
+      `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
       {
         userId,
         productId,
@@ -26,7 +26,7 @@ export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
     const response = await axios.get(
-      `http://localhost:3000/api/shop/cart/get/${userId}`
+      `${import.meta.env.VITE_API_URL}/api/shop/cart/get/${userId}`
     );
 
     return response.data;
@@ -37,7 +37,7 @@ export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ userId, productId }) => {
     const response = await axios.delete(
-      `http://localhost:3000/api/shop/cart/${userId}/${productId}`
+      `${import.meta.env.VITE_API_URL}/api/shop/cart/${userId}/${productId}`
     );
 
     return response.data;
@@ -48,7 +48,7 @@ export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async ({ userId, productId, quantity }) => {
     const response = await axios.put(
-      "http://localhost:3000/api/shop/cart/update-cart",
+      `${import.meta.env.VITE_API_URL}/api/shop/cart/update-cart`,
       {
         userId,
         productId,
@@ -59,10 +59,51 @@ export const updateCartQuantity = createAsyncThunk(
     return response.data;
   }
 );
+
+export const clearCartAsync = createAsyncThunk(
+  "cart/clearCartAsync",
+  async (userId, { dispatch }) => {
+    try {
+      console.log("Clearing cart for user:", userId);
+      
+      if (!userId) {
+        console.error("No user ID provided for cart clearing");
+        dispatch(clearCart());
+        return { success: false, message: "No user ID provided" };
+      }
+      
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/clear/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+      
+      // Also clear the cart in the Redux store
+      dispatch(clearCart());
+      console.log("Cart cleared successfully in both backend and frontend");
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      // Still clear the local cart even if the API call fails
+      dispatch(clearCart());
+      throw error;
+    }
+  }
+);
+
 const shoppingCartSlice = createSlice({
   name: "shoppingCart",
   initialState,
-  reducers: {},
+  reducers: {
+    clearCart: (state) => {
+      state.cartItems = [];
+      console.log("Cart cleared in reducer");
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addToCart.pending, (state) => {
@@ -111,5 +152,5 @@ const shoppingCartSlice = createSlice({
       });
   },
 });
-
+export const { clearCart } = shoppingCartSlice.actions;
 export default shoppingCartSlice.reducer;

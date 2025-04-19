@@ -5,7 +5,7 @@ const User = require("../../models/User");
 //register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const checkUser = await User.findOne({ email });
@@ -71,6 +71,7 @@ const loginUser = async (req, res) => {
     res.cookie('token',token,{httpOnly:true,secure:false}).json({
         success:true,
         message: "User logged in successfully",
+        token: token,
         user:{
             id: checkUser._id,
             role: checkUser.role,
@@ -98,12 +99,23 @@ const logoutUser = (req, res) => {
 
   //auth middleware
 const authMiddleware = async (req, res, next) => {
-    const token = req.cookies.token;
-    if (!token)
+    // Check for token in cookies
+    let token = req.cookies.token;
+    
+    // If not in cookies, check Authorization header
+    if (!token && req.headers.authorization) {
+      const authHeader = req.headers.authorization;
+      if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      }
+    }
+    
+    if (!token) {
       return res.status(401).json({
         success: false,
         message: "Unauthorised user!",
       });
+    }
   
     try {
       const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
@@ -111,6 +123,7 @@ const authMiddleware = async (req, res, next) => {
       
       next();
     } catch (error) {
+      console.error("Auth error:", error.message);
       res.status(401).json({
         success: false,
         message: "Unauthorised user!",

@@ -125,23 +125,41 @@ const {toast }= useToast();
   };
 
   return (
+    // <div className="relative w-44 md:w-full md:max-w-md">
+    //   <div className="relative">
+    //     <Input
+    //       type="text"
+    //       placeholder="Search..."
+    //       value={keyword}
+    //       name="keyword"
+    //       onChange={(e) => setKeyword(e.target.value)}
+    //       onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+    //       className="pl-10 border border-gray-400 focus:border-primary focus:ring-2 focus:ring-ring rounded-[9px]"
+    //     />
+    //     <Search
+    //       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
+    //       size={20}
+    //     />
+    //   </div>
+    // </div>
     <div className="relative w-44 md:w-full md:max-w-md">
-      <div className="relative">
-        <Input
-          type="text"
-          placeholder="Search..."
-          value={keyword}
-          name="keyword"
-          onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="pl-10 border border-gray-400 focus:border-primary focus:ring-2 focus:ring-ring rounded-[9px]"
-        />
-        <Search
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
-          size={20}
-        />
-      </div>
-    </div>
+  <div className="relative">
+    <Input
+      type="text"
+      placeholder="Search..."
+      value={keyword}
+      name="keyword"
+      onChange={(e) => setKeyword(e.target.value)}
+      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+      className="pl-10 border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 hover:border-primary transition-all rounded-none"
+    />
+    <Search
+      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
+      size={20}
+    />
+  </div>
+</div>
+
   );
 }
 
