@@ -39,7 +39,7 @@ import {
   editProduct,
   deleteProduct,
 } from "@/store/Admin/product-slice";
-import AdminProductTile from "@/components/admin-view/adminProductTile";
+import AdminProductTile from "@/components/admin-view/AdminProductTile";
 function AdminProducts() {
   const addProductFormElements = [
     {
