@@ -298,26 +298,94 @@ function ShoppingHeader() {
 //   </Sheet>
 // </header>
 
-<header className="sticky top-0 z-50 w-full border-b bg-[#F0F0F0] shadow-md">
-  <div className="flex h-[70px] items-center justify-between px-2 md:px-6 gap-3 flex-nowrap">
+// <header className="sticky top-0 z-50 w-full border-b bg-[#F0F0F0] shadow-md">
+//   <div className="flex h-[70px] items-center justify-between px-2 md:px-6 gap-3 flex-nowrap">
 
-    {/* Logo */}
+//     {/* Logo */}
+//     <Link to="/shop/home" className="flex-shrink-0">
+//       <img src={websiteLogo} alt="Website Logo" className="h-10 md:h-12 w-auto" />
+//     </Link>
+
+//     {/* Search Box */}
+//     <div className="flex-grow max-w-[160px] xs:max-w-[200px] sm:max-w-[250px] md:max-w-[300px] px-2">
+//       <SearchBox />
+//     </div>
+
+//     {/* MenuItems: Show only on lg+ */}
+//     <div className="hidden lg:flex lg:items-center gap-6 flex-shrink-0">
+//       <MenuItems />
+//     </div>
+
+//     {/* Right Side: Cart & User + Mobile Menu Trigger */}
+//     <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+
+//       {/* Cart & User */}
+//       <HeaderRightContent setOpenCartSheet={setOpenCartSheet} />
+
+//       {/* Mobile Nav Trigger */}
+//       <div className="lg:hidden">
+//         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+//           <SheetTrigger asChild>
+//             {/* <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
+//               <Menu className="h-5 w-5 sm:h-6 w-6" />
+//               <span className="sr-only">Toggle header menu</span>
+//             </Button> */}
+//             <Button
+//   variant="outline"
+//   size="icon"
+//   className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 p-0 min-w-0"
+// >
+//   <Menu className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
+//   <span className="sr-only">Toggle header menu</span>
+// </Button>
+
+//           </SheetTrigger>
+//           <SheetContent side="left" className="w-full max-w-xs bg-[#F0F0F0] p-4">
+//             <MenuItems closeSheet={closeSheet} />
+//           </SheetContent>
+//         </Sheet>
+//       </div>
+//     </div>
+
+//   </div>
+
+//   {/* Cart Sheet */}
+//   <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
+//     {/* Visually Hidden Title */}
+//     <VisuallyHidden>
+//       <SheetTitle>Your Cart</SheetTitle>
+//     </VisuallyHidden>
+//     <SheetContent className="bg-[#F0F0F0] sm:max-w-md h-full overflow-auto">
+//       <CartWrapper
+//       openCartSheet={openCartSheet}
+//         setOpenCartSheet={setOpenCartSheet}
+//         closeSheet={closeCartSheet}
+//         cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
+//       />
+//     </SheetContent>
+//   </Sheet>
+// </header>
+
+<header className="sticky top-0 z-50 w-full border-b bg-[#F0F0F0] shadow-md">
+  <div className="flex h-[60px] items-center justify-between px-2 md:px-6 gap-2 sm:gap-3 flex-nowrap">
+
+    {/* Logo - scaled down */}
     <Link to="/shop/home" className="flex-shrink-0">
-      <img src={websiteLogo} alt="Website Logo" className="h-10 md:h-12 w-auto" />
+      <img src={websiteLogo} alt="Website Logo" className="h-8 xs:h-9 sm:h-10 md:h-12 w-auto" />
     </Link>
 
-    {/* Search Box */}
-    <div className="flex-grow max-w-[160px] xs:max-w-[200px] sm:max-w-[250px] md:max-w-[300px] px-2">
+    {/* SearchBox - flexible and size-limited */}
+    <div className="flex-grow max-w-[100px] xs:max-w-[140px] sm:max-w-[180px] md:max-w-[300px] px-1">
       <SearchBox />
     </div>
 
-    {/* MenuItems: Show only on lg+ */}
+    {/* MenuItems: Hidden on lg- */}
     <div className="hidden lg:flex lg:items-center gap-6 flex-shrink-0">
       <MenuItems />
     </div>
 
     {/* Right Side: Cart & User + Mobile Menu Trigger */}
-    <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
 
       {/* Cart & User */}
       <HeaderRightContent setOpenCartSheet={setOpenCartSheet} />
@@ -326,38 +394,32 @@ function ShoppingHeader() {
       <div className="lg:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
-            {/* <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
-              <Menu className="h-5 w-5 sm:h-6 w-6" />
-              <span className="sr-only">Toggle header menu</span>
-            </Button> */}
             <Button
-  variant="outline"
-  size="icon"
-  className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 p-0 min-w-0"
->
-  <Menu className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
-  <span className="sr-only">Toggle header menu</span>
-</Button>
-
+              variant="outline"
+              size="icon"
+              className="h-6 w-6 xs:h-8 xs:w-8 sm:h-9 sm:w-9 p-0 min-w-0"
+            >
+              <Menu className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
+              <span className="sr-only">Toggle header menu</span>
+            </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs bg-[#F0F0F0] p-4">
             <MenuItems closeSheet={closeSheet} />
           </SheetContent>
         </Sheet>
       </div>
-    </div>
 
+    </div>
   </div>
 
   {/* Cart Sheet */}
   <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
-    {/* Visually Hidden Title */}
     <VisuallyHidden>
       <SheetTitle>Your Cart</SheetTitle>
     </VisuallyHidden>
     <SheetContent className="bg-[#F0F0F0] sm:max-w-md h-full overflow-auto">
       <CartWrapper
-      openCartSheet={openCartSheet}
+        openCartSheet={openCartSheet}
         setOpenCartSheet={setOpenCartSheet}
         closeSheet={closeCartSheet}
         cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
@@ -365,7 +427,6 @@ function ShoppingHeader() {
     </SheetContent>
   </Sheet>
 </header>
-
 
 
   );

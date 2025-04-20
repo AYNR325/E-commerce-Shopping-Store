@@ -346,113 +346,222 @@ console.log(orderState);
   };
 
   return (
-    <Card className="bg-white w-full">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">All Orders</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="text-center py-4">Loading orders...</div>
-        ) : (
-          // 🔥 FIX: Wrap table in an `overflow-x-auto` div
-          <div className="w-[95%] md:w-[100%] overflow-x-auto">
-            <Table className=" wd-[95%] md:w-[100%]">
-              <TableHeader>
-                <TableRow className="bg-gray-100">
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap">
-                    Order ID
-                  </TableHead>
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden sm:table-cell">
-                    Customer
-                  </TableHead>
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap">
-                    Order Date
-                  </TableHead>
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap">
-                    Status
-                  </TableHead>
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden md:table-cell">
-                    Total
-                  </TableHead>
-                  <TableHead className="text-xs sm:text-sm whitespace-nowrap">
-                    <span className="sr-only">Actions</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array.isArray(orderList) && orderList.length > 0 ? (
-                  orderList.map((order) => (
-                    <TableRow key={order._id} className="text-xs sm:text-sm">
-                      <TableCell className="font-medium whitespace-nowrap">
-                        {order._id?.substring(0, 8) + "..."}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell whitespace-nowrap">
-                        {order.userId?.substring(0, 8) + "..."}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        {order.orderDate
-                          ? format(new Date(order.orderDate), "dd/MM/yyyy")
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            // order.orderStatus === "completed" ? "bg-green-100 text-green-800" :
-                            // order.orderStatus === "processing" ? "bg-blue-100 text-blue-800" :
-                            // order.orderStatus === "shipping" ? "bg-purple-100 text-purple-800" :
-                            // order.orderStatus === "delivered" ? "bg-teal-100 text-teal-800" :
-                            // "bg-yellow-100 text-yellow-800"
-                            order.orderStatus === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : order.orderStatus === "processing"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.orderStatus === "shipped"
-                              ? "bg-purple-100 text-purple-800"
-                              : order.orderStatus === "delivered"
-                              ? "bg-green-100 text-green-800"
-                              : order.orderStatus === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {order.orderStatus?.charAt(0).toUpperCase() +
-                            order.orderStatus.slice(1) || "Pending"}
-                        </span>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell whitespace-nowrap">
-                        ₹{order.totalAmount || 0}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        <Button
-                          variant="outline"
-                          className="text-xs sm:text-sm bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border border-[#A67A4B] px-3 py-1 sm:px-4 sm:py-2"
-                          onClick={() => handleViewDetails(order)}
-                        >
-                          View Details
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-4">
-                      No orders found
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-      </CardContent>
+    // <Card className="bg-white w-full">
+    //   <CardHeader>
+    //     <CardTitle className="text-lg md:text-xl">All Orders</CardTitle>
+    //   </CardHeader>
+    //   <CardContent>
+    //     {isLoading ? (
+    //       <div className="text-center py-4">Loading orders...</div>
+    //     ) : (
+    //       // 🔥 FIX: Wrap table in an `overflow-x-auto` div
+    //       <div className="w-[95%] md:w-[100%] overflow-x-auto">
+    //         <Table className=" wd-[95%] md:w-[100%]">
+    //           <TableHeader>
+    //             <TableRow className="bg-gray-100">
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+    //                 Order ID
+    //               </TableHead>
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden sm:table-cell">
+    //                 Customer
+    //               </TableHead>
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+    //                 Order Date
+    //               </TableHead>
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+    //                 Status
+    //               </TableHead>
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden md:table-cell">
+    //                 Total
+    //               </TableHead>
+    //               <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+    //                 <span className="sr-only">Actions</span>
+    //               </TableHead>
+    //             </TableRow>
+    //           </TableHeader>
+    //           <TableBody>
+    //             {Array.isArray(orderList) && orderList.length > 0 ? (
+    //               orderList.map((order) => (
+    //                 <TableRow key={order._id} className="text-xs sm:text-sm">
+    //                   <TableCell className="font-medium whitespace-nowrap">
+    //                     {order._id?.substring(0, 8) + "..."}
+    //                   </TableCell>
+    //                   <TableCell className="hidden sm:table-cell whitespace-nowrap">
+    //                     {order.userId?.substring(0, 8) + "..."}
+    //                   </TableCell>
+    //                   <TableCell className="whitespace-nowrap">
+    //                     {order.orderDate
+    //                       ? format(new Date(order.orderDate), "dd/MM/yyyy")
+    //                       : "N/A"}
+    //                   </TableCell>
+    //                   <TableCell className="whitespace-nowrap">
+    //                     <span
+    //                       className={`px-2 py-1 rounded-full text-xs font-medium ${
+    //                         // order.orderStatus === "completed" ? "bg-green-100 text-green-800" :
+    //                         // order.orderStatus === "processing" ? "bg-blue-100 text-blue-800" :
+    //                         // order.orderStatus === "shipping" ? "bg-purple-100 text-purple-800" :
+    //                         // order.orderStatus === "delivered" ? "bg-teal-100 text-teal-800" :
+    //                         // "bg-yellow-100 text-yellow-800"
+    //                         order.orderStatus === "pending"
+    //                           ? "bg-yellow-100 text-yellow-800"
+    //                           : order.orderStatus === "processing"
+    //                           ? "bg-blue-100 text-blue-800"
+    //                           : order.orderStatus === "shipped"
+    //                           ? "bg-purple-100 text-purple-800"
+    //                           : order.orderStatus === "delivered"
+    //                           ? "bg-green-100 text-green-800"
+    //                           : order.orderStatus === "cancelled"
+    //                           ? "bg-red-100 text-red-800"
+    //                           : "bg-gray-100 text-gray-800"
+    //                       }`}
+    //                     >
+    //                       {order.orderStatus?.charAt(0).toUpperCase() +
+    //                         order.orderStatus.slice(1) || "Pending"}
+    //                     </span>
+    //                   </TableCell>
+    //                   <TableCell className="hidden md:table-cell whitespace-nowrap">
+    //                     ₹{order.totalAmount || 0}
+    //                   </TableCell>
+    //                   <TableCell className="whitespace-nowrap">
+    //                     <Button
+    //                       variant="outline"
+    //                       className="text-xs sm:text-sm bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border border-[#A67A4B] px-3 py-1 sm:px-4 sm:py-2"
+    //                       onClick={() => handleViewDetails(order)}
+    //                     >
+    //                       View Details
+    //                     </Button>
+    //                   </TableCell>
+    //                 </TableRow>
+    //               ))
+    //             ) : (
+    //               <TableRow>
+    //                 <TableCell colSpan={6} className="text-center py-4">
+    //                   No orders found
+    //                 </TableCell>
+    //               </TableRow>
+    //             )}
+    //           </TableBody>
+    //         </Table>
+    //       </div>
+    //     )}
+    //   </CardContent>
 
-      <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
-        <AdminOrderDetails
-          order={selectedOrder}
-          onClose={() => setOpenDetailsDialog(false)}
-        />
-      </Dialog>
-    </Card>
+    //   <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
+    //     <AdminOrderDetails
+    //       order={selectedOrder}
+    //       onClose={() => setOpenDetailsDialog(false)}
+    //     />
+    //   </Dialog>
+    // </Card>
+
+    <Card className="bg-white w-full">
+  <CardHeader>
+    <CardTitle className="text-lg md:text-xl">All Orders</CardTitle>
+  </CardHeader>
+  <CardContent>
+    {isLoading ? (
+      <div className="text-center py-4">Loading orders...</div>
+    ) : (
+      <div className=" w-[85%]  md:w-[100%] overflow-x-auto">
+        <Table className=" w-[80%]  md:w-[100%]">
+          <TableHeader>
+            <TableRow className="bg-gray-100">
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+                Order ID
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden sm:table-cell">
+                Customer
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+                Order Date
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+                Status
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap hidden md:table-cell">
+                Total
+              </TableHead>
+              <TableHead className="text-xs sm:text-sm whitespace-nowrap">
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.isArray(orderList) && orderList.length > 0 ? (
+              orderList.map((order) => (
+                <TableRow key={order._id} className="text-xs sm:text-sm">
+                  <TableCell className="font-medium whitespace-nowrap">
+                    {order._id?.substring(0, 8) + "..."}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell whitespace-nowrap">
+                    {order.userId?.substring(0, 8) + "..."}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {order.orderDate
+                      ? format(new Date(order.orderDate), "dd/MM/yyyy")
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        order.orderStatus === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.orderStatus === "processing"
+                          ? "bg-blue-100 text-blue-800"
+                          : order.orderStatus === "shipped"
+                          ? "bg-purple-100 text-purple-800"
+                          : order.orderStatus === "delivered"
+                          ? "bg-green-100 text-green-800"
+                          : order.orderStatus === "cancelled"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {order.orderStatus?.charAt(0).toUpperCase() +
+                        order.orderStatus.slice(1) || "Pending"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell whitespace-nowrap">
+                    ₹{order.totalAmount || 0}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <Button
+                      variant="outline"
+                      className="text-xs sm:text-sm bg-white text-[#A67A4B] hover:text-white hover:bg-[#A67A4B] border border-[#A67A4B] px-3 py-1 sm:px-4 sm:py-2"
+                      onClick={() => handleViewDetails(order)}
+                    >
+                      View Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-4">
+                  No orders found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    )}
+  </CardContent>
+
+  <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
+    <AdminOrderDetails
+      order={selectedOrder}
+      onClose={() => setOpenDetailsDialog(false)}
+    />
+  </Dialog>
+</Card>
+
+
+
+
+
+
+
   );
 }
 

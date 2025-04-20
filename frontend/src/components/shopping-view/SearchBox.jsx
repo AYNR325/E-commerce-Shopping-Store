@@ -142,7 +142,7 @@ const {toast }= useToast();
     //     />
     //   </div>
     // </div>
-    <div className="relative w-44 md:w-full md:max-w-md">
+    <div className="relative w-32 sm:w-36  md:w-full md:max-w-md">
   <div className="relative">
     <Input
       type="text"

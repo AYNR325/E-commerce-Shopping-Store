@@ -236,15 +236,15 @@ function HeaderRightContent({ closeSheet, isSheetOpen, setOpenCartSheet }) {
     //   </DropdownMenu>
     // </div>
 
-    <div className="flex items-center gap-2 sm:gap-3">
+    <div className="flex items-center gap-1 sm:gap-1 md:gap-2 lg:gap-3 xl:gap-4">
   {/* Cart Button */}
   <Button
     onClick={() => setOpenCartSheet(true)}
     size="icon"
-    className="relative bg-black text-white hover:bg-white hover:text-[#A67A4B] border border-[#A67A4B] rounded-full p-1 sm:p-2 shadow-md transition-transform hover:scale-105 h-8 w-8 sm:h-10 sm:w-10"
+    className="relative bg-black text-white hover:bg-white hover:text-[#A67A4B] border border-[#A67A4B] rounded-full p-1 sm:p-2 shadow-md transition-transform hover:scale-105 h-7 w-7 sm:h-10 sm:w-10"
   >
-    <ShoppingCart className="w-4 h-4 sm:w-6 sm:h-6" />
-    <span className="absolute top-[-4px] right-[-4px] bg-white text-black font-bold text-[10px] sm:text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-sm">
+    <ShoppingCart className="w-3 h-3 sm:w-6 sm:h-6" />
+    <span className="absolute top-[-4px] right-[-4px] bg-white text-black font-bold text-[10px] sm:text-xs w-3 h-3 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-sm">
       {cartItems?.items?.length || 0}
     </span>
   </Button>
@@ -252,7 +252,7 @@ function HeaderRightContent({ closeSheet, isSheetOpen, setOpenCartSheet }) {
   {/* User Dropdown */}
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Avatar className="bg-black cursor-pointer h-8 w-8 sm:h-10 sm:w-10">
+      <Avatar className="bg-black cursor-pointer h-7 w-7 sm:h-10 sm:w-10">
         <AvatarFallback className="bg-black text-white font-extrabold text-sm sm:text-base hover:bg-white hover:text-[#A67A4B] border-[#A67A4B] border-[1px]">
           {user?.userName[0].toUpperCase()}
         </AvatarFallback>
