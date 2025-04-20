@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LogOut, ShoppingCart, UserCog } from "lucide-react";
 import { Button } from "../ui/button";
-import { logoutUser } from "@/store/authSlice/authSlice";
+import { logoutUser, resetState } from "@/store/authSlice/authSlice";
 import { Sheet } from "../ui/sheet";
 import CartWrapper from "./CartWrapper";
 import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -266,7 +266,13 @@ function HeaderRightContent({ closeSheet, isSheetOpen, setOpenCartSheet }) {
         Account
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem onClick={() => dispatch(logoutUser())}>
+<DropdownMenuItem onClick={() => {
+  //dispatch(logoutUser());
+  dispatch(resetState());
+  sessionStorage.clear();
+  navigate("/auth/login");
+}}>
+      
         <LogOut className="mr-2 h-4 w-4" />
         Logout
       </DropdownMenuItem>

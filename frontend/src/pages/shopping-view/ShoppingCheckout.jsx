@@ -471,7 +471,7 @@ function ShoppingCheckout() {
             <p>No addresses found.</p>
             <p>Please add a new address.</p>
             <Link to="/shop/account">
-              <button className="bg-black text-white hover:bg-white hover:text-black border border-black rounded-md mt-4 px-4 py-2 transition-colors">
+              <button className="bg-[#A67A4B] text-white hover:bg-[#af865a]  rounded-md mt-4 px-4 py-2 transition-colors">
                 Add Address
               </button>
             </Link>

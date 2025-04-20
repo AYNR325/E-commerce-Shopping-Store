@@ -68,16 +68,28 @@ const loginUser = async (req, res) => {
         userName: checkUser.userName
     }, 'CLIENT_SECRET_KEY',{expiresIn:'60m'})
 
-    res.cookie('token',token,{httpOnly:true,secure:false}).json({
-        success:true,
-        message: "User logged in successfully",
-        token: token,
-        user:{
-            id: checkUser._id,
-            role: checkUser.role,
-            email: checkUser.email,
-            userName: checkUser.userName
-        }
+    // res.cookie('token',token,{httpOnly:true,secure:true}).json({
+    //     success:true,
+    //     message: "User logged in successfully",
+    //     token: token,
+    //     user:{
+    //         id: checkUser._id,
+    //         role: checkUser.role,
+    //         email: checkUser.email,
+    //         userName: checkUser.userName
+    //     }
+    // })
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      token: token,
+      user: {
+        id: checkUser._id,
+        role: checkUser.role,
+        email: checkUser.email,
+        userName: checkUser.userName,
+      },
     })
 
   } catch (e) {
@@ -98,37 +110,62 @@ const logoutUser = (req, res) => {
   };
 
   //auth middleware
-const authMiddleware = async (req, res, next) => {
-    // Check for token in cookies
-    let token = req.cookies.token;
+// const authMiddleware = async (req, res, next) => {
+//     // Check for token in cookies
+//     let token = req.cookies.token;
     
-    // If not in cookies, check Authorization header
-    if (!token && req.headers.authorization) {
-      const authHeader = req.headers.authorization;
-      if (authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7); // Remove 'Bearer ' prefix
-      }
-    }
+//     // If not in cookies, check Authorization header
+//     if (!token && req.headers.authorization) {
+//       const authHeader = req.headers.authorization;
+//       if (authHeader.startsWith('Bearer ')) {
+//         token = authHeader.substring(7); // Remove 'Bearer ' prefix
+//       }
+//     }
     
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorised user!",
-      });
-    }
+//     if (!token) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorised user!",
+//       });
+//     }
   
-    try {
-      const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-      req.user = decoded;
+//     try {
+//       const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+//       req.user = decoded;
       
-      next();
-    } catch (error) {
-      console.error("Auth error:", error.message);
-      res.status(401).json({
-        success: false,
-        message: "Unauthorised user!",
-      });
-    }
-  };
+//       next();
+//     } catch (error) {
+//       console.error("Auth error:", error.message);
+//       res.status(401).json({
+//         success: false,
+//         message: "Unauthorised user!",
+//       });
+//     }
+//   };
+
+const authMiddleware = async (req, res, next) => {
+  const authHeader=req.headers['authorization'];
+  const token=authHeader && authHeader.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorised user!",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    req.user = decoded;
+    
+    next();
+  } catch (error) {
+    console.error("Auth error:", error.message);
+    res.status(401).json({
+      success: false,
+      message: "Unauthorised user!",
+    });
+  }
+};
 
 module.exports = { registerUser,loginUser ,logoutUser,authMiddleware};

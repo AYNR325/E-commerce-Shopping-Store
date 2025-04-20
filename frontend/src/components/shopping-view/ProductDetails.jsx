@@ -43,6 +43,13 @@ function ProductDetails({ open, setOpen, productDetails }) {
           variant: "success",
           className: "bg-green-500 text-white",
         });
+      } else{
+        toast({
+          title: "Error adding review",
+          description: "Either you have already reviewed this product or you haven't brought this product yet. Please check your purchase history and try again.",
+          variant: "error",
+          className: "bg-red-500 text-white",
+        });
       }
       console.log(data);
     });
