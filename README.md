@@ -43,7 +43,7 @@ Visit the live application at: [E-commerce Shopping Store](https://e-commerce-sh
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/e-commerce-website.git
+git clone https://github.com/AYNR325/E-commerce-Shopping-Store.git
 cd e-commerce-website
 ```
 
