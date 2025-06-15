@@ -7,7 +7,7 @@ A full-stack e-commerce platform built with modern technologies, featuring a bea
 
 ## 🌐 Live Demo
 
-Visit the live application at: [E-commerce Shopping Store](https://e-commerce-shopping-store-1.onrender.com)
+Visit the live application at: [E-commerce Shopping Store](https://e-commerce-shopping-store-roan.vercel.app)
 
 ## ✨ Features
 
