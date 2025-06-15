@@ -26,92 +26,80 @@ function OrderSuccess() {
     
     if (sessionId && user?.id && !orderCreated) {
       // Calculate order summary from cart items
-      if (cartItems && cartItems.items && cartItems.items.length > 0) {
-        const subtotal = cartItems.items.reduce((total, item) => {
-          const itemPrice = item.salePrice !== null ? item.salePrice : item.price;
-          return total + (itemPrice * item.quantity);
-        }, 0);
-        
-        
-        const totalAmount = subtotal;
-        
-        // Create order summary for display
-        setOrderSummary({
-          items: cartItems.items,
-          subtotal,
+      const subtotal = cartItems?.items?.reduce((total, item) => {
+        const itemPrice = item.salePrice !== null ? item.salePrice : item.price;
+        return total + (itemPrice * item.quantity);
+      }, 0) || 0;
+      
+      const totalAmount = subtotal;
+      
+      // Create order summary for display
+      setOrderSummary({
+        items: cartItems?.items || [],
+        subtotal,
+        totalAmount,
+        createdAt: new Date().toISOString(),
+        status: 'processing'
+      });
+      
+      // Verify the session and get order details
+      setIsLoading(true);
+      axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/session/${sessionId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        if (response.data.success) {
+          setOrderId(response.data.order._id);
           
-          totalAmount,
-          createdAt: new Date().toISOString(),
-          status: 'processing'
-        });
-        
-        // Verify the session and get order details
-        setIsLoading(true);
-        axios.get(`${import.meta.env.VITE_API_URL}/api/shop/order/session/${sessionId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        .then(response => {
-          if (response.data.success) {
-            setOrderId(response.data.order._id);
-            
-            // Clear the cart in both frontend and backend
-            if (user && user.id) {
-              dispatch(clearCartAsync(user.id))
-                .then(() => {
-                  console.log("Cart cleared successfully");
-                })
-                .catch(err => {
-                  console.error("Failed to clear cart:", err);
-                  // Fallback to just clearing the frontend cart
-                  dispatch(clearCart());
-                });
-            } else {
-              console.log("No user ID available, clearing frontend cart only");
-              dispatch(clearCart());
-            }
-            
-            setOrderCreated(true);
-            
-            toast({
-              title: "Order confirmed!",
-              description: "Your order has been placed successfully.",
-              variant: "success",
-              className: "text-white bg-green-500",
-            });
+          // Clear the cart in both frontend and backend
+          if (user && user.id) {
+            dispatch(clearCartAsync(user.id))
+              .then(() => {
+                console.log("Cart cleared successfully");
+              })
+              .catch(err => {
+                console.error("Failed to clear cart:", err);
+                // Fallback to just clearing the frontend cart
+                dispatch(clearCart());
+              });
           } else {
-            setError(response.data.message || "Failed to verify order");
-            toast({
-              title: "Failed to confirm order",
-              description: response.data.message || "An error occurred while confirming your order.",
-              variant: "destructive",
-              className: "text-white bg-red-500",
-            });
+            console.log("No user ID available, clearing frontend cart only");
+            dispatch(clearCart());
           }
-        })
-        .catch(err => {
-          console.error("Error verifying order:", err);
-          setError(err.response?.data?.message || "An unexpected error occurred");
+          
+          setOrderCreated(true);
+          
           toast({
-            title: "Error",
-            description: "An unexpected error occurred while confirming your order.",
+            title: "Order confirmed!",
+            description: "Your order has been placed successfully.",
+            variant: "success",
+            className: "text-white bg-green-500",
+          });
+        } else {
+          setError(response.data.message || "Failed to verify order");
+          toast({
+            title: "Failed to confirm order",
+            description: response.data.message || "An error occurred while confirming your order.",
             variant: "destructive",
             className: "text-white bg-red-500",
           });
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-      } else {
-        // No cart items, show a message
+        }
+      })
+      .catch(err => {
+        console.error("Error verifying order:", err);
+        setError(err.response?.data?.message || "An unexpected error occurred");
         toast({
-          title: "No items in cart",
-          description: "Your cart is empty. Please add items to your cart before checkout.",
-          variant: "warning",
-          className: "text-white bg-yellow-500",
+          title: "Error",
+          description: "An unexpected error occurred while confirming your order.",
+          variant: "destructive",
+          className: "text-white bg-red-500",
         });
-      }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
     }
   }, [dispatch, location, user, cartItems, orderCreated, toast]);
 
