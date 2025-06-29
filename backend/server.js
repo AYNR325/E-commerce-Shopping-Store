@@ -18,11 +18,29 @@ mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('Connected to MongoDB'))
  .catch(err => console.error(err));
 
+// CORS configuration - Allow both localhost and deployed domains
+const allowedOrigins = [
+    'http://localhost:5173', // Development - Frontend running on port 3001
+    'https://e-commerce-shopping-store-roan.vercel.app', // Replace with your actual Vercel domain
+    'https://e-commerce-shopping-store-1.onrender.com', // Replace with your actual Render domain
+    process.env.CLIENT_BASE_URL // From environment variable
+].filter(Boolean);
+
 app.use(cors(
     {
-        origin:process.env.CLIENT_BASE_URL,
-        methods:['GET', 'POST','DELETE','PUT'],
-        allowedHeaders:[
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
+            
+            if (allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true);
+            } else {
+                console.log('CORS blocked origin:', origin);
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        methods: ['GET', 'POST', 'DELETE', 'PUT'],
+        allowedHeaders: [
             "Content-Type",
             "Authorization",
             "Cache-Control",
@@ -30,9 +48,9 @@ app.use(cors(
             "Pragma",
             "stripe-signature"
         ],
-        credentials:true
+        credentials: true
     }
-))
+));
 
 // Handle raw body for Stripe webhook
 app.use((req, res, next) => {
